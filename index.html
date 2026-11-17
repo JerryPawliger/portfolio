@@ -63,6 +63,24 @@
     .section { padding-block: 116px; }
     .section-heading { margin: 20px 0 0; font: 700 clamp(45px, 6vw, 84px)/.99 var(--font-display); letter-spacing: -.085em; }
     .section-heading em { font-style: normal; color: var(--accent); }
+
+.title-wrap{display:block;overflow:hidden;}
+.heading-animated > .title-wrap{transform:translateY(110%);opacity:0;filter:blur(8px);}
+.reveal.visible .heading-animated > .title-wrap,
+.hero-copy .heading-animated > .title-wrap,
+.motion-copy .heading-animated > .title-wrap,
+.contact-top .heading-animated > .title-wrap{animation:titleReveal .82s cubic-bezier(.2,.78,.18,1) forwards;}
+.reveal.visible .heading-animated > .title-wrap:nth-child(2),
+.hero-copy .heading-animated > .title-wrap:nth-child(2),
+.motion-copy .heading-animated > .title-wrap:nth-child(2),
+.contact-top .heading-animated > .title-wrap:nth-child(2){animation-delay:.08s;}
+.heading-animated em{position:relative;background:linear-gradient(90deg,var(--accent) 0%,#cf7cff 35%,var(--accent) 70%);background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:titleGlow 7s linear infinite;}
+.heading-animated::after{content:'';display:block;width:min(120px,26vw);height:3px;border-radius:999px;margin-top:14px;background:linear-gradient(90deg,var(--accent),rgba(160,32,240,.08));transform:scaleX(0);transform-origin:left center;opacity:0;}
+.reveal.visible .heading-animated::after,.hero-copy .heading-animated::after,.contact-top .heading-animated::after{animation:lineReveal .65s ease forwards .28s;}
+@keyframes titleReveal{from{transform:translateY(110%);opacity:0;filter:blur(8px);}to{transform:none;opacity:1;filter:none;}}
+@keyframes titleGlow{0%{background-position:0% 50%;}100%{background-position:220% 50%;}}
+@keyframes lineReveal{from{transform:scaleX(0);opacity:0;}to{transform:scaleX(1);opacity:1;}}
+
     .section-intro { max-width: 370px; margin: 12px 0 0; color: var(--muted); line-height: 1.8; font-size: 14px; }
     .section-header { display: flex; justify-content: space-between; align-items: end; gap: 35px; margin-bottom: 44px; }
     .round-arrow { font-family: var(--font-display); font-size: 20px; font-weight: 500; }
@@ -147,6 +165,40 @@
     .project-desc { margin: 9px 0 0; color: var(--muted); line-height: 1.6; font-size: 12px; }
     .project-go { height: 40px; width: 40px; border: 1px solid var(--line); border-radius: 50%; display: grid; place-items: center; flex: none; font: 500 22px var(--font-display); transition: background .2s, color .2s, transform .2s; }
     .project-card:hover .project-go { background: var(--accent); border-color: var(--accent); color: #fff; transform: rotate(45deg); }
+    .art-external {position:absolute;bottom:21px;left:22px;z-index:3;color:#fff;font-size:10px;font-weight:700;letter-spacing:.15em;line-height:1.5;}
+    .cover-photos {background:#19191f;}
+    .cover-photos::before {display:none;}
+    .cover-photos::after {z-index:1;opacity:1;pointer-events:none;background:linear-gradient(180deg,rgba(15,15,20,.24) 0%,transparent 35%,rgba(15,15,20,.68) 100%);}
+    .cover-gallery {position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1.23fr) minmax(0,.77fr);gap:3px;overflow:hidden;}
+    .cover-gallery img {display:block;width:100%;height:100%;min-width:0;min-height:0;object-fit:cover;transition:transform .45s cubic-bezier(.2,.7,.2,1);}
+    .cover-gallery .cover-main {object-position:center 37%;}
+    .cover-side {min-height:0;display:grid;grid-template-rows:minmax(0,1fr) minmax(0,1fr);gap:3px;overflow:hidden;}
+    .cover-side img {object-position:center 42%;}
+    .project-card:hover .cover-gallery img {transform:scale(1.045);}
+    .art-photo-count {position:absolute;right:18px;bottom:18px;z-index:4;color:#fff;font-size:10px;font-weight:700;letter-spacing:.04em;padding:9px 11px;border:1px solid rgba(255,255,255,.5);border-radius:40px;background:rgba(20,20,24,.38);backdrop-filter:blur(8px);}
+    .dialog-gallery[hidden],.dialog-social[hidden] {display:none;}
+    .dialog-gallery {margin:8px 0 26px;}
+    .gallery-main {height:min(48vh,420px);min-height:250px;display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:10px;border-radius:15px;background:#1b1b20;overflow:hidden;padding:12px;}
+    .gallery-image {display:block;width:100%;height:100%;max-height:396px;object-fit:contain;border-radius:8px;}
+    .gallery-arrow {width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.42);background:rgba(255,255,255,.08);color:white;cursor:pointer;font-size:23px;display:grid;place-items:center;}
+    .gallery-arrow:hover {background:var(--accent);border-color:var(--accent);}
+    .gallery-summary {display:flex;justify-content:space-between;gap:14px;align-items:center;color:var(--muted);font-size:11px;margin:11px 0 10px;}
+    .gallery-summary strong {font-size:12px;color:var(--ink);}
+    .gallery-thumbs {display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;}
+    @media (max-width:680px){.gallery-thumbs{grid-template-columns:repeat(3,minmax(0,1fr));}}
+    .gallery-thumb {border:2px solid transparent;background:#eee;border-radius:10px;padding:0;overflow:hidden;cursor:pointer;aspect-ratio:4/5;transition:border-color .2s,transform .2s;}
+    .gallery-thumb[aria-pressed="true"] {border-color:var(--accent);}
+    .gallery-thumb:hover {transform:translateY(-3px);}
+    .gallery-thumb img {width:100%;height:100%;object-fit:cover;}
+    .dialog-social {display:inline-flex;align-items:center;gap:9px;margin-top:22px;border-radius:11px;padding:12px 15px;background:var(--ink);color:white;font-weight:700;font-size:12px;}
+    .dialog-social:hover {background:var(--accent);}
+    @media (max-width:540px) {
+      .gallery-main {grid-template-columns:34px minmax(0,1fr) 34px;gap:4px;min-height:215px;height:35vh;padding:6px;}
+      .gallery-arrow {width:32px;height:32px;font-size:18px;}
+      .gallery-thumbs {gap:4px;}
+      .gallery-thumb {border-radius:6px;}
+      .art-photo-count {font-size:9px;right:12px;bottom:12px;}
+    }
 
     /* AI WORKFLOW */
     .ai-section { background: #EDEDF0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
@@ -200,6 +252,17 @@
     .timeline-year { font: 700 12px/1.5 var(--font-display); color: var(--accent); letter-spacing: -.02em; }
     .timeline-row h3 { font: 700 20px/1.2 var(--font-display); letter-spacing: -.05em; margin: 0 0 7px; }
     .timeline-row p { color: var(--muted); font-size: 12px; line-height: 1.7; margin: 0; }
+
+.about-profile-card { background: var(--paper); border: 1px solid var(--line); border-radius: 24px; padding: 20px; box-shadow: 0 18px 48px rgba(22,22,28,.06); }
+.about-photo-shell { position: relative; overflow: hidden; border-radius: 18px; aspect-ratio: 1 / 1.08; background: #19191f; margin-bottom: 22px; }
+.about-photo-shell::after { content: ''; position: absolute; inset: auto -18% -26% auto; width: 74%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(160,32,240,.45), transparent 70%); }
+.about-photo { width: 100%; height: 100%; object-fit: cover; object-position: center 24%; filter: contrast(1.04) saturate(.96); }
+.about-photo-tag { position: absolute; left: 16px; bottom: 16px; z-index: 2; border-radius: 999px; padding: 10px 12px; font-size: 10px; line-height: 1; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; background: rgba(255,255,255,.84); color: var(--ink); backdrop-filter: blur(14px); }
+.about-quick-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.about-quick-links a { display:inline-flex; align-items:center; gap:8px; min-height: 40px; padding: 11px 14px; border-radius: 999px; border: 1px solid var(--line); font-size: 11px; font-weight: 700; background: #fff; transition: transform .2s, border-color .2s, color .2s; }
+.about-quick-links a:hover { transform: translateY(-2px); border-color: var(--accent); color: var(--accent); }
+.about-note { margin-top: 18px; font-size: 12px; color: var(--muted); line-height: 1.75; }
+
 
     /* CONTACT & FOOTER */
     .contact-section { border-top: 1px solid #33333A; background: var(--dark); color: #fff; padding-block: 104px 55px; }
@@ -361,7 +424,7 @@
       <div class="hero-grid">
         <div class="hero-copy">
           <div class="status"><i aria-hidden="true"></i> Creative portfolio / 2027 edition</div>
-          <h1 class="hero-title" id="heroTitle"><span>Design</span><span>that <span class="line-two">moves.</span></span></h1>
+          <h1 class="hero-title heading-animated" id="heroTitle"><span class="title-wrap">Design</span><span class="title-wrap">that <span class="line-two">moves.</span></span></h1>
           <p class="hero-desc"><strong>Andiga Fazrila (Jerry).</strong> Graphic Designer, Social Media Specialist, dan AI Workflow Designer. Menggabungkan visual, strategi konten, dan sistem kerja AI menjadi karya yang jelas dan berkarakter.</p>
           <div class="actions">
             <a class="button button-fill" href="#work">Explore selected work <span class="round-arrow" aria-hidden="true">↗</span></a>
@@ -391,7 +454,7 @@
     <section class="section wrap" id="work" aria-labelledby="workHeading">
       <div class="eyebrow reveal"><span class="kicker-index">01 /</span> Selected works</div>
       <div class="section-header reveal">
-        <h2 class="section-heading" id="workHeading">A selection<br>of <em>work.</em></h2>
+        <h2 class="section-heading heading-animated" id="workHeading"><span class="title-wrap">A selection</span><span class="title-wrap">of <em>work.</em></span></h2>
         <p class="section-intro">Dari identitas visual esports, brand korporat, sampai eksperimen tipografi. Setiap proyek punya sistem dan karakternya sendiri.</p>
       </div>
       <div class="filters reveal" role="group" aria-label="Filter kategori proyek">
@@ -400,35 +463,41 @@
         <button type="button" class="filter" data-filter="esports" aria-pressed="false">Esports</button>
         <button type="button" class="filter" data-filter="independent" aria-pressed="false">Independent</button>
       </div>
-      <div class="projects-grid" id="projectsGrid">
-        <button class="project-card reveal" type="button" data-category="corporate" data-project="maja" aria-label="Lihat detail karya Maja Group Investama">
-          <div class="project-art art-maja"><span class="project-label">01 / CORPORATE</span><span class="art-typography" aria-hidden="true">MGI.</span></div>
-          <div class="project-body"><div><div class="project-category">Branding / Social media</div><h3 class="project-name">Maja Group Investama</h3><p class="project-desc">Sistem visual korporat, kampanye konten, infografis.</p></div><span class="project-go" aria-hidden="true">↗</span></div>
-        </button>
-        <button class="project-card reveal" type="button" data-category="esports" data-project="raja" aria-label="Lihat detail karya Raja Esports">
-          <div class="project-art art-raja"><span class="project-label">02 / ESPORTS</span><span class="art-typography" aria-hidden="true">RAJA</span></div>
-          <div class="project-body"><div><div class="project-category">Esports / Campaign design</div><h3 class="project-name">Raja Esports</h3><p class="project-desc">Matchday, roster, turnamen, dan visual komunitas.</p></div><span class="project-go" aria-hidden="true">↗</span></div>
-        </button>
-        <button class="project-card reveal" type="button" data-category="independent" data-project="studio" aria-label="Lihat detail karya PWLGR Studio">
-          <div class="project-art art-studio"><span class="project-label">03 / STUDIO</span><span class="art-typography" aria-hidden="true">PWLGR</span></div>
-          <div class="project-body"><div><div class="project-category">Apparel / Typography</div><h3 class="project-name">PWLGR Studio</h3><p class="project-desc">Eksplorasi grafis, lettering, dan streetwear.</p></div><span class="project-go" aria-hidden="true">↗</span></div>
-        </button>
-        <button class="project-card reveal" type="button" data-category="esports" data-project="flazz" aria-label="Lihat detail karya Flazz Arceus">
-          <div class="project-art art-flazz"><span class="project-label">04 / ESPORTS</span><span class="art-typography" aria-hidden="true">FACE</span></div>
-          <div class="project-body"><div><div class="project-category">MLBB / Social content</div><h3 class="project-name">Flazz Arceus</h3><p class="project-desc">Identitas konten kompetitif dan visual pertandingan.</p></div><span class="project-go" aria-hidden="true">↗</span></div>
-        </button>
-        <button class="project-card reveal" type="button" data-category="esports" data-project="ngid" aria-label="Lihat detail karya NGID Esports">
-          <div class="project-art art-ngid"><span class="project-label">05 / EARLY WORK</span><span class="art-typography" aria-hidden="true">NGID</span></div>
-          <div class="project-body"><div><div class="project-category">Esports / Design</div><h3 class="project-name">NGID Esports</h3><p class="project-desc">Awal eksplorasi desain feed dan matchday.</p></div><span class="project-go" aria-hidden="true">↗</span></div>
-        </button>
-      </div>
+      
+<div class="projects-grid" id="projectsGrid">
+  <a class="project-card reveal" data-category="corporate" href="https://www.instagram.com/insidemajagroup/" target="_blank" rel="noopener noreferrer" aria-label="Buka Instagram Maja Group Investama di tab baru">
+    <div class="project-art art-maja"><span class="project-label">01 / CORPORATE</span><span class="art-typography" aria-hidden="true">MGI.</span><span class="art-external">INSTAGRAM ↗</span></div>
+    <div class="project-body"><div><div class="project-category">Corporate / Instagram showcase</div><h3 class="project-name">Maja Group Investama</h3><p class="project-desc">Social media, materi korporat, dan sistem komunikasi visual. Klik untuk membuka Instagram.</p></div><span class="project-go" aria-hidden="true">↗</span></div>
+  </a>
+  <button class="project-card reveal" type="button" data-category="esports" data-project="raja" aria-label="Lihat detail karya Raja Esports">
+    <div class="project-art art-raja cover-photos"><span class="project-label">02 / ESPORTS</span><div class="cover-gallery" aria-hidden="true"><img class="cover-main" src="assets/raja-03.webp" alt="" loading="lazy" decoding="async"><div class="cover-side"><img src="assets/raja-04.webp" alt="" loading="lazy" decoding="async"><img src="assets/raja-05.webp" alt="" loading="lazy" decoding="async"></div></div><span class="art-photo-count">06 karya · Lihat galeri ↗</span></div>
+    <div class="project-body"><div><div class="project-category">Esports / Campaign design</div><h3 class="project-name">Raja Esports</h3><p class="project-desc">Matchday, roster, turnamen, dan visual komunitas.</p></div><span class="project-go" aria-hidden="true">↗</span></div>
+  </button>
+  <button class="project-card reveal" type="button" data-category="independent" data-project="studio" aria-label="Lihat detail karya PWLGR Studio">
+    <div class="project-art art-studio cover-photos"><span class="project-label">03 / STUDIO</span><div class="cover-gallery" aria-hidden="true"><img class="cover-main" src="assets/pwlgr-01.webp" alt="" loading="lazy" decoding="async"><div class="cover-side"><img src="assets/pwlgr-03.webp" alt="" loading="lazy" decoding="async"><img src="assets/pwlgr-05.webp" alt="" loading="lazy" decoding="async"></div></div><span class="art-photo-count">06 karya · Lihat galeri ↗</span></div>
+    <div class="project-body"><div><div class="project-category">Apparel / Typography</div><h3 class="project-name">PWLGR Studio</h3><p class="project-desc">Eksplorasi grafis, lettering, dan streetwear.</p></div><span class="project-go" aria-hidden="true">↗</span></div>
+  </button>
+  <button class="project-card reveal" type="button" data-category="esports" data-project="flazz" aria-label="Lihat detail karya Flazz Arceus">
+    <div class="project-art art-flazz cover-photos"><span class="project-label">04 / ESPORTS</span><div class="cover-gallery" aria-hidden="true"><img class="cover-main" src="assets/flazz-02.webp" alt="" loading="lazy" decoding="async"><div class="cover-side"><img src="assets/flazz-03.webp" alt="" loading="lazy" decoding="async"><img src="assets/flazz-06.webp" alt="" loading="lazy" decoding="async"></div></div><span class="art-photo-count">06 karya · Lihat galeri ↗</span></div>
+    <div class="project-body"><div><div class="project-category">MLBB / Social content</div><h3 class="project-name">Flazz Arceus</h3><p class="project-desc">Identitas konten kompetitif, hero spotlight, dan visual pertandingan.</p></div><span class="project-go" aria-hidden="true">↗</span></div>
+  </button>
+  <button class="project-card reveal" type="button" data-category="esports" data-project="ngid" aria-label="Lihat detail karya NGID Esports">
+    <div class="project-art art-ngid cover-photos"><span class="project-label">05 / EARLY WORK</span><div class="cover-gallery" aria-hidden="true"><img class="cover-main" src="assets/ngid-01.webp" alt="" loading="lazy" decoding="async"><div class="cover-side"><img src="assets/ngid-03.webp" alt="" loading="lazy" decoding="async"><img src="assets/ngid-06.webp" alt="" loading="lazy" decoding="async"></div></div><span class="art-photo-count">06 karya · Lihat galeri ↗</span></div>
+    <div class="project-body"><div><div class="project-category">Esports / Early career</div><h3 class="project-name">NGID Esports</h3><p class="project-desc">Awal perjalanan desain feed dan matchday dengan karakter kompetitif.</p></div><span class="project-go" aria-hidden="true">↗</span></div>
+  </button>
+  <button class="project-card reveal" type="button" data-category="independent" data-project="other" aria-label="Lihat detail karya Other Design">
+    <div class="project-art art-studio cover-photos"><span class="project-label">06 / OTHER DESIGN</span><div class="cover-gallery" aria-hidden="true"><img class="cover-main" src="assets/other-04.webp" alt="" loading="lazy" decoding="async"><div class="cover-side"><img src="assets/other-02.webp" alt="" loading="lazy" decoding="async"><img src="assets/other-06.webp" alt="" loading="lazy" decoding="async"></div></div><span class="art-photo-count">06 karya · Lihat galeri ↗</span></div>
+    <div class="project-body"><div><div class="project-category">Experimental / Open visual</div><h3 class="project-name">Other Design</h3><p class="project-desc">Kumpulan eksplorasi visual, poster, artwork, dan komposisi grafis lainnya.</p></div><span class="project-go" aria-hidden="true">↗</span></div>
+  </button>
+</div>
+
     </section>
 
     <section class="section ai-section" id="ai" aria-labelledby="aiHeading">
       <div class="wrap">
         <div class="ai-head reveal">
           <div class="eyebrow"><span class="kicker-index">02 /</span> AI & creative operations</div>
-          <h2 class="section-heading" id="aiHeading">More than prompts.<br><em>Better workflows.</em></h2>
+          <h2 class="section-heading heading-animated" id="aiHeading"><span class="title-wrap">More than prompts.</span><span class="title-wrap"><em>Better workflows.</em></span></h2>
           <p class="section-intro" style="max-width:610px">Menggunakan ChatGPT dan Claude untuk menyusun alur kerja yang lebih sistematis. Mulai dari riset dan perencanaan sampai penyusunan dokumen, produksi konten, dan evaluasi hasil.</p>
         </div>
         <div class="ai-layout">
@@ -448,37 +517,45 @@
     </section>
 
     <section class="motion-section wrap" id="motion" aria-labelledby="motionHeading">
-      <div class="motion-heading reveal"><div><div class="eyebrow"><span class="kicker-index">03 /</span> Experimental visual</div><h2 class="section-heading" id="motionHeading">Type meets <em>motion.</em></h2></div><p class="section-intro">Eksperimen visual generatif yang terinspirasi dari estetika TouchDesigner. Interaksi langsung melalui kursor atau sentuhan.</p></div>
+      <div class="motion-heading reveal"><div><div class="eyebrow"><span class="kicker-index">03 /</span> Experimental visual</div><h2 class="section-heading heading-animated" id="motionHeading"><span class="title-wrap">Type meets <em>motion.</em></span></h2></div><p class="section-intro">Eksperimen visual generatif yang terinspirasi dari estetika TouchDesigner. Interaksi langsung melalui kursor atau sentuhan.</p></div>
       <div class="motion-stage reveal" id="motionStage">
         <canvas class="motion-canvas" id="motionCanvas" aria-hidden="true"></canvas>
-        <div class="motion-copy"><div class="eyebrow">Creative lab / interactive canvas</div><h2>Beyond<br><span>static.</span></h2><p>Typography. Movement. Interaction. Menyatukan hierarki tipografi dengan motion yang memberi karakter, tanpa mengorbankan keterbacaan.</p></div>
+        <div class="motion-copy"><div class="eyebrow">Creative lab / interactive canvas</div><h2 class="heading-animated"><span class="title-wrap">Beyond</span><span class="title-wrap"><span>static.</span></span></h2><p>Typography. Movement. Interaction. Menyatukan hierarki tipografi dengan motion yang memberi karakter, tanpa mengorbankan keterbacaan.</p></div>
         <div class="motion-note">Touch / move to interact<br>Procedural web animation</div>
       </div>
     </section>
 
-    <section class="about-section" id="about" aria-labelledby="aboutHeading">
-      <div class="wrap about-layout">
-        <div class="reveal">
-          <div class="eyebrow"><span class="kicker-index">04 /</span> The person behind the pixels</div>
-          <h2 class="section-heading" id="aboutHeading">A little<br><em>about me.</em></h2>
-          <p class="about-lead">Kreativitas yang dibangun lewat pengalaman, rasa ingin tahu, dan sistem kerja yang jelas.</p>
-          <p class="about-copy">Saya Andiga Fazrila, biasa dikenal sebagai Jerry. Sejak 2019, saya mengerjakan desain grafis untuk esports, social media, branding korporat, dan apparel. Kini saya juga mengembangkan workflow AI untuk membantu mempercepat riset, produksi konten, dan dokumentasi tanpa melepas kontrol kualitas.</p>
-          <h3 class="skill-title">My creative toolkit</h3>
-          <div class="skill-list"><span class="skill">Illustrator</span><span class="skill">Photoshop</span><span class="skill">Canva</span><span class="skill">CapCut</span><span class="skill">ChatGPT</span><span class="skill">Claude</span><span class="skill">Typography</span><span class="skill">Brand Systems</span><span class="skill">Visual Storytelling</span><span class="skill">Prompt Design</span></div>
-        </div>
-        <div class="timeline reveal" aria-label="Pengalaman profesional">
-          <div class="timeline-row"><div class="timeline-year">2019</div><div><h3>Start of the journey</h3><p>Mulai berkarya dalam desain grafis dan konten esports.</p></div></div>
-          <div class="timeline-row"><div class="timeline-year">2021–24</div><div><h3>Raja Esports / RANS</h3><p>Konten kompetitif, matchday design, dan visual turnamen.</p></div></div>
-          <div class="timeline-row"><div class="timeline-year">2024–25</div><div><h3>Flazz Arceus</h3><p>Pengembangan materi visual tim dan konten Mobile Legends.</p></div></div>
-          <div class="timeline-row"><div class="timeline-year">2024–now</div><div><h3>Maja Group Investama</h3><p>Corporate visual design, social media, presentasi, dan konten digital.</p></div></div>
-          <div class="timeline-row"><div class="timeline-year">Ongoing</div><div><h3>PWLGR Studio & AI workflow</h3><p>Eksplorasi grafis apparel dan pengembangan proses kreatif berbantuan AI.</p></div></div>
-        </div>
+    
+<section class="about-section" id="about" aria-labelledby="aboutHeading">
+  <div class="wrap about-layout">
+    <div class="reveal about-profile-card">
+      <div class="about-photo-shell">
+        <img class="about-photo" src="assets/jerry-profile.webp" alt="Foto Andiga Fazrila Jerry" loading="lazy" decoding="async">
+        <span class="about-photo-tag">Introducing / Jerry</span>
       </div>
-    </section>
+      <div class="eyebrow"><span class="kicker-index">04 /</span> The person behind the pixels</div>
+      <h2 class="section-heading heading-animated" id="aboutHeading"><span class="title-wrap">Introducing</span><span class="title-wrap"><em>Jerry.</em></span></h2>
+      <p class="about-lead">Desainer yang bekerja dengan rasa, sistem, dan tempo produksi yang cepat.</p>
+      <p class="about-copy">Saya Andiga Fazrila, biasa dikenal sebagai Jerry. Sejak 2019 saya mengerjakan desain grafis untuk esports, social media, branding korporat, apparel, dan eksperimen tipografi. Saat ini saya juga mengembangkan workflow AI menggunakan ChatGPT dan Claude untuk mempercepat riset, penyusunan dokumen, ide konten, dan proses creative operations tanpa melepas kontrol kualitas.</p>
+      <div class="about-quick-links"><a href="https://instagram.com/jerrypwlgr_" target="_blank" rel="noopener noreferrer">Instagram ↗</a><a href="mailto:jerrydiandrapraditya@gmail.com">Email ↗</a><a href="https://wa.me/6285176955851" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a></div>
+      <p class="about-note">Fokus utama saya adalah membuat brand terasa lebih hidup melalui visual yang konsisten, karakter tipografi yang kuat, dan sistem konten yang siap dipakai lintas platform.</p>
+      <h3 class="skill-title">My creative toolkit</h3>
+      <div class="skill-list"><span class="skill">Illustrator</span><span class="skill">Photoshop</span><span class="skill">Canva</span><span class="skill">CapCut</span><span class="skill">ChatGPT</span><span class="skill">Claude</span><span class="skill">Typography</span><span class="skill">Brand Systems</span><span class="skill">Visual Storytelling</span><span class="skill">Prompt Design</span></div>
+    </div>
+    <div class="timeline reveal" aria-label="Pengalaman profesional">
+      <div class="timeline-row"><div class="timeline-year">2019</div><div><h3>Start of the journey</h3><p>Mulai berkarya dalam desain grafis dan konten esports.</p></div></div>
+      <div class="timeline-row"><div class="timeline-year">2021–24</div><div><h3>Raja Esports / RANS</h3><p>Konten kompetitif, matchday design, visual turnamen, dan kampanye komunitas.</p></div></div>
+      <div class="timeline-row"><div class="timeline-year">2024–25</div><div><h3>Flazz Arceus</h3><p>Pengembangan materi visual tim, hero spotlight, dan konten Mobile Legends.</p></div></div>
+      <div class="timeline-row"><div class="timeline-year">2024–now</div><div><h3>Maja Group Investama</h3><p>Corporate visual design, social media, presentasi, komunikasi digital, dan kebutuhan event.</p></div></div>
+      <div class="timeline-row"><div class="timeline-year">Ongoing</div><div><h3>PWLGR Studio & AI workflow</h3><p>Eksplorasi grafis apparel, tipografi, serta pengembangan sistem kerja berbantuan AI.</p></div></div>
+    </div>
+  </div>
+</section>
+
 
     <section class="contact-section" id="contact" aria-labelledby="contactHeading">
       <div class="wrap">
-        <div class="contact-top"><div><div class="eyebrow"><span class="kicker-index">05 /</span> Let's build something</div><h2 class="contact-title" id="contactHeading">Have an idea?<br><em>Let's make it.</em></h2></div><a class="contact-button" href="mailto:jerrydiandrapraditya@gmail.com" aria-label="Kirim email ke Jerry">↗</a></div>
+        <div class="contact-top"><div><div class="eyebrow"><span class="kicker-index">05 /</span> Let's build something</div><h2 class="contact-title heading-animated" id="contactHeading"><span class="title-wrap">Have an idea?</span><span class="title-wrap"><em>Let's make it.</em></span></h2></div><a class="contact-button" href="mailto:jerrydiandrapraditya@gmail.com" aria-label="Kirim email ke Jerry">↗</a></div>
         <div class="contact-bottom"><div class="address">Based in West Kalimantan, Indonesia<br>Available for creative collaborations</div><div class="contact-links"><a href="mailto:jerrydiandrapraditya@gmail.com">Email ↗</a><a href="https://instagram.com/jerrypwlgr_" target="_blank" rel="noopener noreferrer">Instagram ↗</a><a href="https://wa.me/6285176955851" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a></div></div>
         <div class="footer-end"><span>© <span id="year">2026</span> Andiga Fazrila (Jerry)</span><span>Made with intention. Designed to move.</span></div>
       </div>
@@ -491,8 +568,18 @@
       <div class="dialog-label" id="dialogLabel"></div>
       <h2 class="dialog-title" id="dialogTitle"></h2>
       <p class="dialog-body" id="dialogDescription"></p>
+      <div class="dialog-gallery" id="dialogGallery" hidden>
+        <div class="gallery-main">
+          <button class="gallery-arrow" id="galleryPrev" type="button" aria-label="Foto sebelumnya">‹</button>
+          <img class="gallery-image" id="galleryImage" alt="" loading="eager" decoding="async">
+          <button class="gallery-arrow" id="galleryNext" type="button" aria-label="Foto berikutnya">›</button>
+        </div>
+        <div class="gallery-summary"><strong>Selected visuals</strong><span id="galleryCount" aria-live="polite">01 / 06</span></div>
+        <div class="gallery-thumbs" id="galleryThumbs" aria-label="Pilih foto karya"></div>
+      </div>
       <div class="dialog-facts"><div class="dialog-fact"><span>Peran</span><strong id="dialogRole"></strong></div><div class="dialog-fact"><span>Periode</span><strong id="dialogYear"></strong></div><div class="dialog-fact"><span>Tools</span><strong id="dialogTools"></strong></div><div class="dialog-fact"><span>Fokus</span><strong id="dialogFocus"></strong></div></div>
       <h3 class="dialog-heading">Ruang lingkup pekerjaan</h3><ul class="dialog-deliverables" id="dialogDeliverables"></ul>
+      <a class="dialog-social" id="dialogSocial" href="#" target="_blank" rel="noopener noreferrer" hidden>Instagram proyek ↗</a>
     </div>
   </div>
 
@@ -546,16 +633,44 @@
         $$('.project-card').forEach(card => card.hidden = target !== 'all' && card.dataset.category !== target);
       }));
 
-      const projects = {
-        maja: { label:'Corporate / Branding / Social media', title:'Maja Group Investama', role:'Graphic Designer & Social Media', year:'2024 – Sekarang', tools:'Illustrator, Photoshop, Canva, CapCut', focus:'Corporate visual & content', description:'Pengelolaan konten dan visual korporat dengan pendekatan yang konsisten, mulai dari materi komunikasi rutin sampai kebutuhan presentasi dan event.', deliverables:['Sistem visual social media dan materi branding','Desain infografis dan presentasi bisnis','Konten kampanye serta materi event','Editing konten video untuk komunikasi digital'] },
-        raja: { label:'Esports / Campaign design', title:'Raja Esports (RANS)', role:'Graphic Designer', year:'2021 – 2024', tools:'Illustrator, Photoshop', focus:'Competitive content', description:'Produksi desain visual untuk divisi Free Fire dan Mobile Legends. Fokus pada identitas kompetitif, keterbacaan informasi, dan konsistensi visual tim.', deliverables:['Matchday dan tournament graphics','Pengumuman roster dan kampanye komunitas','Konten engagement esports','Adaptasi visual untuk berbagai format feed'] },
-        studio: { label:'Independent / Apparel / Typography', title:'PWLGR Studio', role:'Owner & Visual Designer', year:'Ongoing', tools:'Illustrator, Photoshop', focus:'Streetwear graphic', description:'Studio eksplorasi visual personal yang berfokus pada lettering, tipografi ekspresif, grafis apparel, serta desain streetwear yang berkarakter.', deliverables:['Eksplorasi typographic art','Desain grafis apparel dan kaos','Custom lettering dan ilustrasi','Commission work untuk personal dan brand'] },
-        flazz: { label:'Esports / MLBB', title:'Flazz Arceus', role:'Graphic Designer', year:'2024 – 2025', tools:'Illustrator, Photoshop', focus:'MLBB visual identity', description:'Pembuatan konten grafis untuk tim Mobile Legends Flazz Arceus dengan karakter visual yang bersih, energik, dan mudah dikenali.', deliverables:['Matchday visuals','Hero spotlight dan konten tim','Materi farewell serta pengumuman','Adaptasi identitas pada kebutuhan turnamen'] },
-        ngid: { label:'Esports / Early career', title:'NGID Esports', role:'Graphic Design', year:'Early career', tools:'Digital design tools', focus:'Esports content', description:'Karya awal dalam desain grafis esports yang membentuk dasar pengalaman produksi visual untuk kebutuhan sosial media dan kompetisi.', deliverables:['Materi social media esports','Visual matchday dan informasi tim','Eksplorasi layout dan tipografi kompetitif'] }
-      };
+      
+const projects = {
+  maja: { label:'Corporate / Branding / Social media', title:'Maja Group Investama', role:'Graphic Designer & Social Media', year:'2024 – Sekarang', tools:'Illustrator, Photoshop, Canva, CapCut', focus:'Corporate visual & content', description:'Pengelolaan konten dan visual korporat dengan pendekatan yang konsisten, mulai dari materi komunikasi rutin sampai kebutuhan presentasi dan event.', deliverables:['Sistem visual social media dan materi branding','Desain infografis dan presentasi bisnis','Konten kampanye serta materi event','Editing konten video untuk komunikasi digital'] },
+  raja: { label:'Esports / Campaign design', title:'Raja Esports (RANS)', role:'Graphic Designer', year:'2021 – 2024', tools:'Illustrator, Photoshop', focus:'Competitive content', description:'Produksi desain visual untuk divisi Free Fire dan Mobile Legends. Fokus pada identitas kompetitif, keterbacaan informasi, dan konsistensi visual tim.', deliverables:['Matchday dan tournament graphics','Pengumuman roster dan kampanye komunitas','Konten engagement esports','Adaptasi visual untuk berbagai format feed'] },
+  studio: { label:'Independent / Apparel / Typography', title:'PWLGR Studio', role:'Owner & Visual Designer', year:'Ongoing', tools:'Illustrator, Photoshop', focus:'Streetwear graphic', description:'Studio eksplorasi visual personal yang berfokus pada lettering, tipografi ekspresif, grafis apparel, serta desain streetwear yang berkarakter.', deliverables:['Eksplorasi typographic art','Desain grafis apparel dan kaos','Custom lettering dan ilustrasi','Commission work untuk personal dan brand'] },
+  flazz: { label:'Esports / MLBB', title:'Flazz Arceus', role:'Graphic Designer', year:'2024 – 2025', tools:'Illustrator, Photoshop', focus:'MLBB visual identity', description:'Pembuatan konten grafis untuk tim Mobile Legends Flazz Arceus dengan karakter visual yang bersih, energik, dan mudah dikenali.', deliverables:['Matchday visuals','Hero spotlight dan konten tim','Materi farewell serta pengumuman','Adaptasi identitas pada kebutuhan turnamen'] },
+  ngid: { label:'Esports / Early career', title:'NGID Esports', role:'Graphic Design', year:'Early career', tools:'Digital design tools', focus:'Esports content', description:'Karya awal dalam desain grafis esports yang membentuk dasar pengalaman produksi visual untuk kebutuhan sosial media dan kompetisi.', deliverables:['Materi social media esports','Visual matchday dan informasi tim','Eksplorasi layout dan tipografi kompetitif'] },
+  other: { label:'Independent / Experimental visual', title:'Other Design', role:'Visual Designer', year:'Selected works', tools:'Illustrator, Photoshop', focus:'Open visual explorations', description:'Kumpulan karya lain di luar kategori utama: poster, artwork, layout eksperimental, dan eksplorasi visual yang menunjukkan range desain Jerry.', deliverables:['Artwork dan poster visual','Eksplorasi komposisi serta layout','Eksperimen tipografi dan mood visual','Selected miscellaneous design works'] }
+};
       const dialog = $('#projectDialog');
       const closeDialogButton = $('#dialogClose');
       let lastFocused = null;
+      
+const galleries = {
+  raja: {handle:'@ransesports.official', url:'https://www.instagram.com/ransesports.official/', images:['raja-01.webp','raja-02.webp','raja-03.webp','raja-04.webp','raja-05.webp','raja-06.webp']},
+  studio: {handle:'@pwlgr.std', url:'https://www.instagram.com/pwlgr.std/', images:['pwlgr-01.webp','pwlgr-02.webp','pwlgr-03.webp','pwlgr-04.webp','pwlgr-05.webp','pwlgr-06.webp']},
+  flazz: {handle:null, url:null, images:['flazz-01.webp','flazz-02.webp','flazz-03.webp','flazz-04.webp','flazz-05.webp','flazz-06.webp']},
+  ngid: {handle:null, url:null, images:['ngid-01.webp','ngid-02.webp','ngid-03.webp','ngid-04.webp','ngid-05.webp','ngid-06.webp']},
+  other: {handle:null, url:null, images:['other-01.webp','other-02.webp','other-03.webp','other-04.webp','other-05.webp','other-06.webp']}
+};
+      const galleryEl = $('#dialogGallery');
+      const galleryImage = $('#galleryImage');
+      const galleryThumbs = $('#galleryThumbs');
+      const gallerySocial = $('#dialogSocial');
+      let galleryCurrent = null;
+      let galleryIndex = 0;
+      function showGalleryImage(index) {
+        if (!galleryCurrent) return;
+        galleryIndex = (index + galleryCurrent.images.length) % galleryCurrent.images.length;
+        const file = galleryCurrent.images[galleryIndex];
+        const name = $('#dialogTitle').textContent;
+        galleryImage.src = 'assets/' + file;
+        galleryImage.alt = `Portofolio ${name}, karya ${galleryIndex + 1} dari ${galleryCurrent.images.length}`;
+        $('#galleryCount').textContent = `${String(galleryIndex+1).padStart(2,'0')} / ${String(galleryCurrent.images.length).padStart(2,'0')}`;
+        [...galleryThumbs.children].forEach((thumb,i) => thumb.setAttribute('aria-pressed', String(i===galleryIndex)));
+      }
+      $('#galleryPrev').addEventListener('click', () => showGalleryImage(galleryIndex - 1));
+      $('#galleryNext').addEventListener('click', () => showGalleryImage(galleryIndex + 1));
       function openDialog(id) {
         const data = projects[id];
         if (!data) return;
@@ -567,6 +682,34 @@
         $('#dialogYear').textContent = data.year;
         $('#dialogTools').textContent = data.tools;
         $('#dialogFocus').textContent = data.focus;
+        galleryCurrent = galleries[id] || null;
+        const hasGallery = !!(galleryCurrent && Array.isArray(galleryCurrent.images) && galleryCurrent.images.length);
+        galleryEl.hidden = !hasGallery;
+        gallerySocial.hidden = !(galleryCurrent && galleryCurrent.url);
+        if (hasGallery) {
+          galleryThumbs.replaceChildren(...galleryCurrent.images.map((file, idx) => {
+            const thumb = document.createElement('button');
+            thumb.type = 'button'; thumb.className = 'gallery-thumb';
+            thumb.setAttribute('aria-label', `Tampilkan karya ${idx + 1}`);
+            thumb.setAttribute('aria-pressed', String(idx===0));
+            const img = document.createElement('img');
+            img.src = 'assets/' + file; img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
+            thumb.append(img);
+            thumb.addEventListener('click', () => showGalleryImage(idx));
+            return thumb;
+          }));
+          showGalleryImage(0);
+          if (galleryCurrent.url) {
+            gallerySocial.href = galleryCurrent.url;
+            gallerySocial.textContent = `Kunjungi Instagram ${galleryCurrent.handle} ↗`;
+          } else {
+            gallerySocial.removeAttribute('href');
+          }
+        } else {
+          galleryThumbs.replaceChildren();
+          galleryImage.removeAttribute('src');
+          gallerySocial.removeAttribute('href');
+        }
         const list = $('#dialogDeliverables');
         list.replaceChildren(...data.deliverables.map(item => { const li = document.createElement('li'); li.textContent = item; return li; }));
         dialog.classList.add('open');
@@ -579,14 +722,17 @@
         dialog.classList.remove('open');
         dialog.setAttribute('aria-hidden','true');
         document.body.classList.remove('locked');
+        galleryCurrent = null;
         lastFocused?.focus();
       }
-      $$('.project-card').forEach(card => card.addEventListener('click', () => openDialog(card.dataset.project)));
+      $$('button.project-card').forEach(card => card.addEventListener('click', () => openDialog(card.dataset.project)));
       closeDialogButton.addEventListener('click',closeDialog);
       dialog.addEventListener('click',e => { if (e.target === dialog) closeDialog(); });
       document.addEventListener('keydown', e => {
         if (!dialog.classList.contains('open')) return;
-        if (e.key === 'Escape') closeDialog();
+        if (e.key === 'Escape') { closeDialog(); return; }
+        if (galleryCurrent && e.key === 'ArrowLeft') { showGalleryImage(galleryIndex - 1); return; }
+        if (galleryCurrent && e.key === 'ArrowRight') { showGalleryImage(galleryIndex + 1); return; }
         if (e.key !== 'Tab') return;
         const focusable = $$('button, a[href], input, [tabindex]:not([tabindex="-1"])', $('#dialogPanel')).filter(n => !n.disabled);
         if (!focusable.length) return;
