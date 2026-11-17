@@ -193,6 +193,22 @@
   @media(prefers-reduced-motion:reduce){.swarm-control{transition:none}}
 
 
+  
+/* COVER / TYPOGRAPHY SWARM — retained photographic contrast and motion hierarchy */
+.portrait-frame{touch-action:pan-y}
+.hero-swarm-canvas{position:absolute;inset:0;z-index:2;display:block;width:100%;height:100%;pointer-events:none;mix-blend-mode:screen;opacity:.95}
+.portrait-swarm-hint{position:absolute;z-index:3;right:21px;top:21px;padding:6px 9px;border-radius:5px;border:1px solid rgba(238,207,252,.45);background:rgba(17,15,26,.48);color:#ead1fa;font:700 8px/1.3 var(--head);letter-spacing:.14em;pointer-events:none}
+/* Per-title particles are temporary canvases. The real text always remains visible. */
+.swarm-heading{position:relative;isolation:isolate}
+.swarm-heading>.heading-particle-overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;display:block;z-index:3;overflow:visible}
+.swarm-heading:not(.hero-title):not(.work-name):not(.modal-title) em,
+.swarm-heading .heading-accent{background:linear-gradient(105deg,var(--accent) 22%,#cd80f7 50%,var(--accent) 76%);background-size:260% auto;-webkit-background-clip:text;background-clip:text;color:transparent}
+.swarm-heading.is-swarm-active .title-line>span{filter:drop-shadow(0 0 9px rgba(160,32,240,.13))}
+.work-card:hover .swarm-heading,.ai-card:hover .swarm-heading{color:var(--accent);transition:color .25s}
+@media(hover:none){.swarm-heading>.heading-particle-overlay{opacity:.82}}
+@media(max-width:560px){.portrait-swarm-hint{top:14px;right:14px;font-size:7px}.hero-swarm-canvas{opacity:.8}}
+@media(prefers-reduced-motion:reduce){.hero-swarm-canvas,.heading-particle-overlay{display:none!important}.swarm-heading em,.swarm-heading .heading-accent{animation:none!important}}
+
   </style>
 </head>
 <body>
@@ -224,8 +240,10 @@
       <div class="hero-actions"><a href="#work" class="btn dark">Explore my work <span aria-hidden="true">↗</span></a><a href="#contact" class="btn outline">Let's collaborate <span aria-hidden="true">↗</span></a></div>
       <div class="hero-facts" aria-label="Ringkasan keahlian"><div><strong>2019<span class="heading-accent">.</span></strong><small>Creative journey</small></div><div><strong>Design + AI</strong><small>Creative systems</small></div><div><strong>Indonesia</strong><small>Open for projects</small></div></div>
     </div>
-    <div class="portrait-frame hero-entrance delay">
+    <div class="portrait-frame hero-entrance delay" id="heroPortrait" aria-label="Potret Jerry dengan partikel generatif interaktif">
       <img class="portrait-img" src="assets/jerry-profile.webp" alt="Potret Jerry mengenakan sweatshirt merah marun" fetchpriority="high" width="886" height="886" decoding="async">
+      <canvas id="heroSwarmCanvas" class="hero-swarm-canvas" aria-hidden="true"></canvas>
+      <span class="portrait-swarm-hint" aria-hidden="true">SWARM / REBUILD 01</span>
       <div class="portrait-top">Behind the pixels / 01</div>
       <span class="portrait-sticker" aria-hidden="true">DESIGN × AI</span>
       <div class="portrait-bottom"><div><strong>Jerry / Andiga</strong><small>Designer · Visual thinker</small></div><span class="portrait-monogram" aria-hidden="true">J.</span></div>
@@ -472,6 +490,168 @@
     setup();
   }
   initSwarm();
+
+  // COVER SWARM: lightweight Canvas 2D flock that rebuilds a J. glyph beside the portrait.
+  // The effect never modifies photo pixels or blocks buttons/navigation.
+  function initCoverSwarm(){
+    const host=$('#heroPortrait'),canvas=$('#heroSwarmCanvas');
+    if(!host||!canvas)return;
+    const ctx=canvas.getContext('2d',{alpha:true});if(!ctx)return;
+    const mobileQ=matchMedia('(max-width:560px)');
+    let w=1,h=1,points=[],isVisible=false,raf=0,last=0,startTime=0,stillFor=0;
+    let pointer={x:-9999,y:-9999,on:false};
+    const rand=(a,b)=>a+Math.random()*(b-a);
+    const easeClamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+    function createTargets(){
+      const r=host.getBoundingClientRect();w=Math.max(2,Math.round(r.width));h=Math.max(2,Math.round(r.height));
+      const mobile=mobileQ.matches;
+      const scale=Math.min(devicePixelRatio||1,mobile?1:1.4);
+      canvas.width=Math.round(w*scale);canvas.height=Math.round(h*scale);ctx.setTransform(scale,0,0,scale,0,0);
+      const tmp=document.createElement('canvas');tmp.width=w;tmp.height=h;
+      const t=tmp.getContext('2d',{willReadFrequently:true});if(!t)return;
+      const size=Math.min(mobile?w*.32:w*.39, mobile?126:215);
+      t.font=`700 ${Math.round(size)}px "Space Grotesk",Arial,sans-serif`;
+      t.textAlign='center';t.textBaseline='middle';t.fillStyle='#fff';
+      const tx=mobile?w*.81:w*.79,ty=mobile?h*.65:h*.59;
+      t.fillText('J.',tx,ty);
+      const pixels=t.getImageData(0,0,w,h).data;
+      const step=mobile?6:5,raw=[];
+      for(let y=step;y<h-step;y+=step)for(let x=step;x<w-step;x+=step){if(pixels[(y*w+x)*4+3]>95)raw.push([x,y]);}
+      const cap=mobile?115:265,stride=Math.max(1,Math.ceil(raw.length/cap));
+      points=[];
+      for(let i=0;i<raw.length;i+=stride){const [x,y]=raw[i];points.push({x:x+rand(-70,70),y:y+rand(-55,55),tx:x,ty:y,vx:0,vy:0,size:rand(.7,1.6),phase:rand(0,6.28)});}
+      startTime=performance.now();stillFor=0;draw(0);
+    }
+    function burst(x,y){
+      if(reduced)return;
+      const cx=x??w*.8,cy=y??h*.57;
+      for(const p of points){let dx=p.x-cx,dy=p.y-cy;const distance=Math.max(20,Math.hypot(dx,dy));p.vx+=(dx/distance)*rand(2,7)+rand(-1.3,1.3);p.vy+=(dy/distance)*rand(2,7)+rand(-1.3,1.3);}
+      stillFor=0;start();
+    }
+    function draw(t){
+      ctx.clearRect(0,0,w,h);
+      const mobile=mobileQ.matches;
+      const cx=w*.79,cy=mobile?h*.65:h*.58;
+      // Geometric orbit is kept to the right of the face.
+      const N=mobile?5:9;
+      ctx.lineWidth=.75;
+      for(let k=0;k<N;k++){
+        const radius=Math.min(w*.18,h*.17)*(0.48+k/N*.82);
+        ctx.beginPath();
+        for(let s=0;s<=64;s++){
+          const a=s/64*Math.PI*2;const wobble=Math.sin(a*3+k*.6+t*.5)*3;
+          const px=cx+Math.cos(a)*(radius+wobble),py=cy+Math.sin(a)*(radius*.82+wobble);
+          if(s===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+        }
+        ctx.strokeStyle=k%3===0?'rgba(225,164,251,.37)':'rgba(171,64,243,.21)';ctx.stroke();
+      }
+      let speed=0;
+      for(const p of points){
+        if(!reduced){
+          const xTarget=p.tx+Math.sin(t*.7+p.phase)*.28,yTarget=p.ty+Math.cos(t*.56+p.phase)*.28;
+          let ax=(xTarget-p.x)*.034,ay=(yTarget-p.y)*.034;
+          if(pointer.on){const dx=p.x-pointer.x,dy=p.y-pointer.y,ds=dx*dx+dy*dy;const range=mobile?3000:5200;if(ds>2&&ds<range){const force=(1-ds/range)*1.35,dist=Math.sqrt(ds);ax+=dx/dist*force;ay+=dy/dist*force}}
+          p.vx=(p.vx+ax)*.84;p.vy=(p.vy+ay)*.84;p.x+=p.vx;p.y+=p.vy;
+        }else{p.x=p.tx;p.y=p.ty;p.vx=0;p.vy=0}
+        speed+=Math.abs(p.vx)+Math.abs(p.vy);
+        ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fillStyle=p.phase>3?'rgba(241,205,255,.95)':'rgba(186,86,248,.92)';ctx.fill();
+      }
+      stillFor=speed<points.length*.13?stillFor+1:0;
+    }
+    function tick(ms){raf=0;if(!isVisible||document.hidden||reduced)return;
+      const interval=1000/(mobileQ.matches?22:28);
+      if(!last||ms-last>=interval){last=ms;draw(ms/1000);}
+      // Continuous only near the start; after settling use a low-frequency frame for the orbit.
+      if(ms-startTime<3500||pointer.on||stillFor<45){start();}
+      else{window.setTimeout(()=>{if(isVisible&&!document.hidden&&!pointer.on&&!reduced)start()},750);}
+    }
+    function start(){if(!raf&&isVisible&&!document.hidden&&!reduced)raf=requestAnimationFrame(tick)}
+    function stop(){if(raf)cancelAnimationFrame(raf);raf=0;last=0}
+    if('IntersectionObserver'in window){new IntersectionObserver(entries=>{isVisible=entries[0].isIntersecting;if(isVisible)start();else stop()},{rootMargin:'80px 0px',threshold:.03}).observe(host)}else{isVisible=true;start()}
+    if('ResizeObserver'in window)new ResizeObserver(()=>{createTargets();if(isVisible)start()}).observe(host);
+    else addEventListener('resize',()=>{createTargets();start()},{passive:true});
+    host.addEventListener('pointermove',e=>{const r=host.getBoundingClientRect();pointer.x=e.clientX-r.left;pointer.y=e.clientY-r.top;pointer.on=true;start()},{passive:true});
+    host.addEventListener('pointerleave',()=>{pointer.on=false},{passive:true});
+    host.addEventListener('pointerup',()=>{pointer.on=false},{passive:true});
+    host.addEventListener('pointercancel',()=>{pointer.on=false},{passive:true});
+    host.addEventListener('pointerdown',e=>{const r=host.getBoundingClientRect();burst(e.clientX-r.left,e.clientY-r.top)},{passive:true});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();else if(isVisible)start()});
+    createTargets();if(reduced)draw(0);
+  }
+
+  // TYPOGRAPHY SWARM: each heading briefly rebuilds from sampled glyph particles.
+  // Real text stays rendered and selectable; the particles are decorative only.
+  function initTypographySwarm(){
+    const headings=$$('.hero-title,.section-title,.motion-display,.contact-title,.ai-statement,.work-name,.ai-card h3,.timeline-row h3');
+    const onScreen=(node)=>{const r=node.getBoundingClientRect();return r.bottom>0&&r.top<innerHeight};
+    const instances=new WeakMap();
+    let activeCount=0;
+    function play(node){
+      if(reduced||document.hidden||!onScreen(node))return;
+      if(activeCount>=3){setTimeout(()=>{if(onScreen(node))play(node)},260);return;}
+      const prev=instances.get(node);if(prev?.stop)prev.stop();
+      const r=node.getBoundingClientRect(),w=Math.round(r.width),h=Math.round(r.height);
+      if(w<10||h<8||w>1250||h>380)return;
+      const isMobile=innerWidth<600;
+      const scratch=document.createElement('canvas');scratch.width=w;scratch.height=h;
+      const g=scratch.getContext('2d',{willReadFrequently:true});if(!g)return;
+      const cs=getComputedStyle(node),fontSize=parseFloat(cs.fontSize)||22,lineHeight=parseFloat(cs.lineHeight)||fontSize*1.2;
+      g.fillStyle='#fff';g.textAlign='left';g.textBaseline='middle';
+      g.font=`${cs.fontWeight||700} ${Math.round(fontSize)}px ${cs.fontFamily}`;
+      if('letterSpacing'in g)g.letterSpacing=cs.letterSpacing;
+      const lines=[...node.querySelectorAll(':scope > .title-line')];
+      if(lines.length){
+        for(const line of lines){const lr=line.getBoundingClientRect();let text=line.textContent.trim();g.fillText(text,lr.left-r.left,lr.top-r.top+lr.height*.5);}
+      }else{
+        const texts=node.innerText.trim().split(/\n+/).map(s=>s.trim()).filter(Boolean);
+        texts.forEach((txt,i)=>g.fillText(txt,0,Math.min(h-3,lineHeight*(i+.5))));
+      }
+      const image=g.getImageData(0,0,w,h).data;
+      const step=isMobile?4:4;const coords=[];
+      for(let y=2;y<h-2;y+=step)for(let x=2;x<w-2;x+=step)if(image[(y*w+x)*4+3]>95)coords.push([x,y]);
+      if(coords.length<15)return;
+      const cap=node.matches('.hero-title,.section-title,.contact-title,.motion-display,.ai-statement')?(isMobile?125:205):(isMobile?65:95);
+      const stride=Math.max(1,Math.floor(coords.length/cap));
+      const selected=[];for(let i=0;i<coords.length;i+=stride)selected.push(coords[i]);
+      if(selected.length>cap)selected.length=cap;
+      const particles=selected.map(([tx,ty])=>({tx,ty,x:tx+(Math.random()-.5)*(isMobile?50:90),y:ty+(Math.random()-.5)*(isMobile?42:65),r:Math.random()*1.0+.6,phase:Math.random()*6.28}));
+      const canvas=document.createElement('canvas');canvas.className='heading-particle-overlay';canvas.setAttribute('aria-hidden','true');
+      const dpr=Math.min(devicePixelRatio||1,1.4);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
+      canvas.style.width=w+'px';canvas.style.height=h+'px';
+      const ctx=canvas.getContext('2d',{alpha:true});if(!ctx)return;ctx.setTransform(dpr,0,0,dpr,0,0);
+      node.classList.add('swarm-heading','is-swarm-active');node.append(canvas);
+      let raf=0;let done=false;const duration=isMobile?900:1150;const begin=performance.now();activeCount++;
+      function cleanup(){if(done)return;done=true;if(raf)cancelAnimationFrame(raf);canvas.remove();node.classList.remove('is-swarm-active');activeCount=Math.max(0,activeCount-1);}
+      function tick(now){if(done)return;if(document.hidden||!onScreen(node)){cleanup();return;}
+        const progress=Math.min(1,(now-begin)/duration),ease=1-Math.pow(1-progress,3);
+        ctx.clearRect(0,0,w,h);ctx.globalAlpha=(progress<.75?.9:(1-progress)/.25*.9);
+        for(const p of particles){const x=p.x+(p.tx-p.x)*ease+Math.sin(now*.006+p.phase)*(1-ease)*2;const y=p.y+(p.ty-p.y)*ease;ctx.beginPath();ctx.arc(x,y,p.r,0,Math.PI*2);ctx.fillStyle=p.phase>3?'#c67df8':'#a020f0';ctx.fill();}
+        if(progress<1)raf=requestAnimationFrame(tick);else cleanup();
+      }
+      instances.set(node,{stop:cleanup});raf=requestAnimationFrame(tick);
+    }
+    headings.forEach(node=>node.classList.add('swarm-heading'));
+    if(reduced)return;
+    let lastTrigger=0;
+    const observer=('IntersectionObserver'in window)?new IntersectionObserver(entries=>{
+      entries.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top).forEach((entry,i)=>{
+        const node=entry.target;observer.unobserve(node);
+        setTimeout(()=>{if(onScreen(node))play(node)},node.matches('.hero-title')?550:290+i*140);
+      });
+    },{rootMargin:'0px 0px -18px 0px',threshold:.1}):null;
+    if(observer)headings.forEach(node=>observer.observe(node));
+    else headings.forEach(node=>setTimeout(()=>play(node),800));
+    // Desktop hover or keyboard focus replays the effect on a specific title.
+    headings.forEach(node=>{
+      const target=node.closest('.work-card,.ai-card')||node;
+      if(matchMedia('(hover:hover)').matches)target.addEventListener('pointerenter',()=>play(node),{passive:true});
+      if(target.matches('a,button'))target.addEventListener('focus',()=>play(node));
+    });
+  }
+  initCoverSwarm();
+  const ready=()=>initTypographySwarm();
+  if(document.fonts?.ready)document.fonts.ready.then(ready).catch(ready);else ready();
+
 })();
 </script>
 </body>

@@ -1,15 +1,11 @@
-Jerry Portfolio 2027 — TouchDesigner Motion & Swarm Rebuild
+Jerry Portfolio 2027 — Cover & Typography Swarm
 
-Fitur:
-- Responsive design (desktop/tablet/mobile), tetap mempertahankan layout terbaru
-- Foto Jerry pada hero dan 30 visual proyek di assets/
-- Maja Group langsung menuju Instagram
-- Motion Lab: visual generatif ala TouchDesigner, partikel membentuk tipografi J.
-- Klik tombol Rebuild visual atau tap untuk menyebarkan dan merakit kembali partikel.
-- Efek berhenti ketika di luar viewport atau tab tidak aktif.
-- Frame-rate dibatasi menjadi 30 fps desktop dan 24 fps mobile, dengan jumlah partikel adaptif.
-- Mendukung prefers-reduced-motion, tanpa library render eksternal.
+Perubahan:
+• Cover depan menampilkan partikel monogram J. dengan geometric feedback orbit, tanpa mengubah foto Jerry.
+• Judul Hero, Selected Works, AI Workflows, Motion Lab, About, Contact, serta nama proyek menampilkan efek Swarm Rebuild singkat.
+• Animasi bisa diputar ulang dengan hover/fokus pada judul.
+• Motion Lab interaktif tetap dipertahankan.
+• Animasi menyesuaikan perangkat, berhenti di tab tersembunyi dan menghormati pengaturan reduced motion.
+• Enam proyek, 30 karya desain, satu foto profil, dan seluruh tautan tetap dipertahankan.
 
-Semua efek dibuat menggunakan HTML Canvas 2D. Ini merupakan gaya visual terinspirasi TouchDesigner, bukan file aplikasi TouchDesigner.
-
-Unggah index.html serta seluruh folder assets/ ke root branch main di GitHub Pages.
+Untuk GitHub Pages, unggah index.html dan seluruh folder assets/ ke root branch main.
