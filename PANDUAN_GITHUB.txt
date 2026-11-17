@@ -1,0 +1,26 @@
+UPLOAD JERRY PORTFOLIO KE GITHUB PAGES
+
+Repository: https://github.com/JerryPawliger/portfolio
+Website: https://jerrypawliger.github.io/portfolio/
+
+1. Ekstrak ZIP Jerry_Portfolio_2027_Responsive_Optimized.zip.
+2. Buka repository GitHub di atas, pastikan masuk dengan akun yang punya izin menulis.
+3. Cadangkan index.html versi lama jika Anda perlu salinannya.
+4. Di branch main, pilih Add file > Upload files.
+5. Unggah index.html DAN seluruh folder assets beserta 31 gambar di dalamnya.
+   Anda dapat menyeret (drag and drop) folder assets dari komputer ke area upload.
+6. Pastikan struktur repo menjadi:
+   /index.html
+   /assets/jerry-profile.webp
+   /assets/raja-01.webp ... raja-06.webp
+   /assets/pwlgr-01.webp ... pwlgr-06.webp
+   /assets/flazz-01.webp ... flazz-06.webp
+   /assets/ngid-01.webp ... ngid-06.webp
+   /assets/other-01.webp ... other-06.webp
+7. Commit message:
+   Refine Portfolio 2027 - Responsive Layout, Project Galleries & Lightweight Motion
+8. Klik Commit changes (atau selesaikan pull request bila GitHub memintanya).
+9. Buka Settings > Pages. Gunakan Deploy from a branch, main, /(root).
+10. Setelah GitHub Pages selesai membangun, kunjungi website. Hard refresh bila cache masih lama.
+
+Penting: Jangan unggah file ZIP sebagai satu file. Semua foto harus berada dalam folder assets di root.
